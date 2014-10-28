@@ -95,10 +95,16 @@ final state is no more final state (old_final_state)
 add new final state.
 symbol = old_symbol + Mark
 
+Simulation
 Use mark to specify head.
 input[Tape -> stack A] : insert mark before head position
 (Initial state) Pop stack A and push it to B until we meet mark.
 Meet mark -> Pop mark, change state's second parameter to Ongoing.
+
+Transition
+one dir = pop from A (empty means blank, then do nothing), push result to B
+the other = pop from B (empty means blank, then do nothing), push result to A
+
 Entered old_final_state -> Pop stack A and push it to B until the end. If A is empty and old_final_state -> transition to final_state, halt.
 output[stack B -> Tape] 
 "
@@ -189,9 +195,9 @@ def FRACTRAN(table, n)
   x = table.detect{|x| (n%x.denominator).zero?}
   x.nil??
     n :
-#    FRACTRAN(table, x*n)
-    if(x.numerator%P[10] == 0) then return "INFLOOP"
-    else FRACTRAN(table, x*n) end
+    FRACTRAN(table, x*n)
+#    if(x.numerator%P[10] == 0) then return "INFLOOP"
+#    else FRACTRAN(table, x*n) end
 end
 
 #FRACTRAN(sample_table, 2)
@@ -227,13 +233,14 @@ my_table = [
         ]
 
 
-(64..128).each{|i| puts "#{i}\t#{FRACTRAN(my_table, Rational(2**i,1))}"}
+#(64..128).each{|i| puts "#{i}\t#{FRACTRAN(my_table, Rational(2**i,1))}"}
 
-# require 'Timeout'
-# (1..64).each{|i|
-#   begin
-#     Timeout::timeout(5) {puts "#{i}\t#{FRACTRAN(my_table, Rational(2**i,1))}"}
-#   rescue Timeout::Error
-#     puts "#{i}\tTAKES INFINITE LOOP"
-#   end
-# }
+require 'Timeout'
+TIME_THRESHOLD = 5
+(1..64).each{|i|
+  begin
+    Timeout::timeout(TIME_THRESHOLD) {puts "#{i}\t#{FRACTRAN(my_table, Rational(2**i,1))}"}
+  rescue Timeout::Error
+    puts "#{i}\tTAKES INFINITE LOOP"
+  end
+}
