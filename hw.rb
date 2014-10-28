@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #http://otfried-cheong.appspot.com/courses/cs422/hw2.html
+#https://github.com/sven--/lambda_fizz
 require "./fizzbuzz"
 require "./interface"
 require "Prime"
